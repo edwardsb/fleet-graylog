@@ -51,12 +51,12 @@ services:
     volumes:
       - fleet-data:/tmp
 
-  filebeat:
-    image: beats:latest
-    volumes:
-      - fleet-data:/tmp
-    command:
-      - "filebeat -f /tmp/osquery_results -config foo.yml"
+#  filebeat:
+#    image: beats:latest
+#    volumes:
+#      - fleet-data:/tmp
+#    command:
+#      - "filebeat -f /tmp/osquery_results -config foo.yml"
 
 
   fleet-migrate:
