@@ -34,7 +34,7 @@ services:
       - "3306:3306"
 
   fleet:
-    image: fleetdm/fleet:v4.22.1
+    image: fleetdm/fleet:v4.23.0
     ports:
       - "8080:8080"
     depends_on:
@@ -48,8 +48,9 @@ services:
       FLEET_MYSQL_ADDRESS: mysql:3306
       FLEET_MYSQL_PASSWORD: insecure
       FLEET_REDIS_ADDRESS: redis:6379
+      FLEET_FILESYSTEM_RESULT_LOG_FILE: /tmp/fleet/osquery_results.log
     volumes:
-      - fleet-data:/tmp
+      - ./logs/fleet:/tmp/fleet
 
 #  filebeat:
 #    image: beats:latest
@@ -60,7 +61,7 @@ services:
 
 
   fleet-migrate:
-    image: fleetdm/fleet:v4.22.1
+    image: fleetdm/fleet:v4.23.0
     command: fleet prepare --no-prompt=true db
     depends_on:
       - redis
@@ -129,6 +130,13 @@ services:
       - "graylog_data:/usr/share/graylog/data/data"
       - "graylog_journal:/usr/share/graylog/data/journal"
     restart: "on-failure"
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.3.3
+    volumes:
+      - ./logs/fleet:/tmp/fleet
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat:/filebeat
 
 volumes:
   fleet-data:
